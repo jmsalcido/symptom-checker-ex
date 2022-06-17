@@ -1,6 +1,29 @@
 # symptom-checker-ex-backend
 symptom-checker-ex-backend
 
+## Backend TODO
+- [x] Create django-rest-framework app
+- [x] Make models available in the admin panel
+- [x] Create endpoint to retrieve symptoms for questionnaire
+- [ ] Create endpoint for sending user symptoms
+- [ ] Create endpoint for checking results
+
+## Backend EXTRA & EXTRA-EXTRA POINTS tasks
+- [ ] Parse XML task (load task)
+- [ ] Deployment on simple cloud provider like Heroku
+
+
+### Parse XML task "ETL":
+- [ ] Create django manage.py task
+- [ ] Add disease if not exists
+- [ ] Add symptom if not exists
+- [ ] Add frequency if not exists
+- [ ] Add symptom-frequency if not exists
+    - Very frequent
+    - Frequent
+    - Occasional
+    - Excluded (0%)
+
 ## Model:
 **Based on this db diagram:**
 https://dbdiagram.io/d/62aa81779921fe2a9616aa60
@@ -11,13 +34,10 @@ http://www.orphadata.org/data/xml/en_product4.xml
 ### Explanation:
 
 - Disease
-  - Any disease by itself with name (most important thing right now)
-  - other fields are related to the ORPHA integration do not know if we will require them, but we can have them for the moment, if required, we can migrate that to a METADATA field or table
+  - name
 - Symptom
   - name
     - name of the symptom
-  - hpo_id
-    - since the relationship comes with this id, we can possibly just use our own id instead of this one.
 - Frequency
   - name
     - This represents the possible answers that we want from the user
@@ -25,10 +45,8 @@ http://www.orphadata.org/data/xml/en_product4.xml
       - Frequent
       - Occasional
       - Excluded (0%)
-  - frequency_low
-    - represents the lower range (just for display purposes)
-  - frequency_high
-    - represents the upper range (just for display purposes)
+  - weight
+    - the weight that will be used to weight the responses from the symptom-checker
 
 #### Many-to-Many relationships:
 - Disease to Symptom
@@ -167,27 +185,3 @@ With a result of:
 | A     | 6      |
 
 `C` is not included since it's not part of the possible diseases first fetch and the symptom frequency is not even relevant for this.
-
-## Backend TODO
-- [x] Create django-rest-framework app
-- [ ] Create endpoint to retrieve symptoms for questionnaire
-- [ ] Create endpoint for sending user symptoms
-- [ ] Parse XML task (load task)
-- [ ] Make models available in the admin panel
-
-
-### Parse XML task "ETL":
-- [ ] Create django manage.py task
-- [ ] Add disease if not exists
-- [ ] Add symptom if not exists
-- [ ] Add frequency if not exists
-- [ ] Add symptom-frequency if not exists
-    - Very frequent
-    - Frequent
-    - Occasional
-    - Excluded (0%)
-
-
-
-Create endpoint for sending symptoms:
-1. receive a list of HPO symptoms
