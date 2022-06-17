@@ -184,3 +184,75 @@ With a result of:
 | A     | 6      |
 
 `C` is not included since it's not part of the possible diseases first fetch and the symptom frequency is not even relevant for this.
+
+## Endpoints
+This endpoint will be hit at the load of the UI to show what symptoms we are experiencing.
+`GET /symptom-checker/symptoms`
+```json
+{
+    "symptoms": [
+        {
+            "id": int,
+            "name": "X"
+        },
+        {
+            "id": int,
+            "name": "Y"
+        }, ...
+    ],
+    // this will contain the frequencies for each response, passing id and name or value
+    "frequencies": [
+        {
+            "id": int,
+            "value": string
+        }
+    ]
+}
+```
+
+We should gather all the symptom+frequency and submit all this info through this endpoint
+`POST /symptom-checker/`
+```json
+// input
+{
+    "symptoms": [
+        {
+            "name": int,
+            "frequency": int
+        },
+        {
+            "name": int,
+            "frequency": int
+        }
+    ],
+}
+
+// response
+{
+    // generate a result id for each symptom-check
+    "result_id": 1234
+}
+```
+
+This can return us a "Your data is being processed" and give an id to verify in the future.
+
+`GET /symptom-checker/results/{id}`
+```json
+// response
+{
+    // this will let us know if the result is processed already or not, we can show 1 page or the other depending on this state
+    // like: "We are still processing your info, thank you!"
+    "status": true|false,
+
+    // list of symptoms selected in the symtopm-checker
+    "symptoms": [...],
+
+    // nullable, only if status is true should be present
+    // response will be sorted from the backend.
+    "possible_diseases": [
+        {
+            "name": "Disease A"
+        }
+    ]
+}
+```
