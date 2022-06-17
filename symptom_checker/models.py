@@ -7,7 +7,7 @@ class Symptom(models.Model):
 
 
 class Frequency(models.Model):
-    name = models.CharField(max_length=20, blank=False)
+    value = models.CharField(max_length=20, blank=False)
     weight = models.IntegerField(null=False, default=0)
 
 
