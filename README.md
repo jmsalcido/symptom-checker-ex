@@ -1,5 +1,4 @@
 # symptom-checker-ex-backend
-symptom-checker-ex-backend
 
 ## Backend TODO
 - [x] Create django-rest-framework app
