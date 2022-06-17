@@ -187,6 +187,7 @@ With a result of:
 
 ## Endpoints
 This endpoint will be hit at the load of the UI to show what symptoms we are experiencing.
+
 `GET /symptom-checker/symptoms`
 ```json
 {
@@ -211,6 +212,7 @@ This endpoint will be hit at the load of the UI to show what symptoms we are exp
 ```
 
 We should gather all the symptom+frequency and submit all this info through this endpoint
+
 `POST /symptom-checker/`
 ```json
 // input
