@@ -30,26 +30,28 @@ https://dbdiagram.io/d/62aa81779921fe2a9616aa60
 **Based on the ORPHDATA relationship**
 http://www.orphadata.org/data/xml/en_product4.xml
 
+and
+
+http://www.orphadata.org/cgi-bin/faq.html
+
 ### Explanation:
 
 - Disease
-  - name
+  - id
+  - name: name of the disease
 - Symptom
-  - name
-    - name of the symptom
+  - name: name of the symptom
 - Frequency
-  - name
-    - This represents the possible answers that we want from the user
-      - Very frequent
-      - Frequent
-      - Occasional
-      - Excluded (0%)
-  - weight
-    - the weight that will be used to weight the responses from the symptom-checker
+  - name: This represents the weight of the relationship: disease_symptom
+    - Always Present - 100
+    - Very frequent - 99-80
+    - Frequent - 79-30
+    - Occasional - 29-5
+    - Rare - 4-1
+    - Excluded - 0
 
 #### Many-to-Many relationships:
-- Disease to Symptom
-- Disease to Symptom and Frequency (for comparison)
+- Disease to Symptom and Frequency
 
 ## How to retrieve relevant conditions
 > Write a function which accepts a list of symptoms (HPO IDs) as input and returns an ordered list of the most relevant rare conditions
@@ -62,30 +64,30 @@ Using the `disease_symptom` relationship we will look up for the diseases:
 
 `disease` table
 
-| id  | name | orpha_code |
-|-----|------|------------|
-| 1   | A    | 1          |
-| 2   | B    | 2          |
-| 3   | C    | 3          |
+| id  | name |
+|-----|------|
+| 1   | A    |
+| 2   | B    |
+| 3   | C    |
 
 `symptom` table
 
-| id  | name | hpo_id |
-|-----|------|--------|
-| 1   | X    | HP:001 |
-| 2   | Y    | HP:002 |
-| 3   | Z    | HP:003 |
-| 4   | U    | HP:004 |
-| 5   | V    | HP:005 |
+| id  | name |
+|-----|------|
+| 1   | X    |
+| 2   | Y    |
+| 3   | Z    |
+| 4   | U    |
+| 5   | V    |
 
 `frequency` table
 
-| id  | name          | weight | low_range | high_range |
-|-----|---------------|--------|-----------|------------|
-| 1   | Very Frequent | 3      | 80        | 99         | 
-| 2   | Frequent      | 2      | 30        | 79         |
-| 3   | Occasional    | 1      | 5         | 29         |
-| 4   | Excluded      | 0      | 0         | 0          |
+| id  | name          | low_range | high_range |
+|-----|---------------|-----------|------------|
+| 1   | Very Frequent | 80        | 99         | 
+| 2   | Frequent      | 30        | 79         |
+| 3   | Occasional    | 5         | 29         |
+| 4   | Excluded      | 0         | 0          |
 
 `disease_symptom_frequency` table or view
 
@@ -102,7 +104,7 @@ Using the `disease_symptom` relationship we will look up for the diseases:
 
 #### Algorithm:
 1. Load Disease Symptom Frequency based on the included symptom frequency (user_input)
-2. Sum the frequency weights
+2. Sum the frequency weights (low_range for simplicity)
 3. Order by weights
 
 #### Database only queries
@@ -112,15 +114,12 @@ If a user input looked like this:
 | symptom_name | frequency_name |
 |--------------|----------------|
 | X            | Very Frequent  |
-| Y            | Excluded       |
 | Z            | Occasional     |
-| W            | Excluded       |
-| K            | Excluded       |
 
 We would look into the `disease_symptom` table where symptoms include:
-`[X,Y,Z]`, in this case, `Excluded` is not relevant but the others are relevant:
+`[X,Z]`, in this case.
 
-We would look into the `disease_symptom` table for:
+We would look into the `disease_symptom_frequency` table for:
 Diseases that contains the non-excluded symptoms:
 
 The query to obtain the possible diseases would be:
@@ -132,10 +131,7 @@ WITH user_input AS (
      SELECT * FROM
         ( VALUES
               ('X', 'Very Frequent'),
-              ('Y', 'Excluded'),
               ('Z','Occasional'),
-              ('W', 'Excluded'),
-              ('K','Excluded')
           ) AS temp(symptom_name, frequency_name)
 )
 SELECT DISTINCT D.name FROM diseases D
@@ -154,10 +150,7 @@ WITH user_input AS (
      SELECT * FROM
         ( VALUES
               ('X', 'Very Frequent'),
-              ('Y', 'Excluded'),
               ('Z','Occasional'),
-              ('W', 'Excluded'),
-              ('K','Excluded')
           ) AS temp(symptom_name, frequency_name)
 ), possible_diseases AS (
     SELECT DISTINCT D.id, D.name FROM diseases D
