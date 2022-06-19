@@ -1,3 +1,35 @@
+# Frontend
+
+## Color Palette to follow:
+https://www.colourlovers.com/palette/77121/Good_Friends
+
+I think it looks calm and it could help the entire selection of symptoms related to find out if you have a disease or not.
+
+## Main Structure:
+
+### Landing/SymptomChecker:
+Main page, contains important info on how to use the web app and links to start or review your results.
+
+### Symptoms Selection:
+Symptoms page will be a view to select only the symptoms you are experiencing, the data will be filled from the backend.
+
+### Quiz per Symptom:
+After a symptom is selected, we will ask to capture the frequency of each symptom on a quiz like page per symptom.
+
+### SymptomsResult:
+This page will be the result of calling your symptoms + frequencies and will return the job id that we need to store to verify each result.
+
+### Check Results:
+This page will contain a view to capture the result obtained from your quiz.
+
+### Result Detail:
+This page will contain the status of your job, if it was not started by some reason or it failed.
+
+If the status is processed/complete:
+This page will contain a list of possible diseases ordered from the backend, selected the top 5
+
+----- 
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
