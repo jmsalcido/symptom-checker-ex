@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+
+    button {
+        @apply text-white bg-pachyderm bg-pachyderm
+        hover:bg-kind-giant hover:text-white rounded-md
+    }
+
+    .button_light {
+        @apply text-white bg-forever bg-forever
+        hover:bg-bond hover:text-white rounded-md
+    }
+
+}
