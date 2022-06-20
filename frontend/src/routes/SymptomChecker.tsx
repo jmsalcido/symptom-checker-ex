@@ -1,60 +1,19 @@
 import React from "react";
-
-const getSymptomsData = () => {
-    return {
-        symptoms: [
-            {
-                id: 1,
-                name: "X"
-            },
-            {
-                id: 2,
-                name: "Y"
-            },
-            {
-                id: 3,
-                name: "Z"
-            },
-            {
-                id: 4,
-                name: "A"
-            },
-            {
-                id: 5,
-                name: "B"
-            },
-            {
-                id: 6,
-                name: "C"
-            },
-            {
-                id: 7,
-                name: "D"
-            },
-        ]
-    }
-}
+import SymptomForm from "../components/SymptomChecker/SymptomForm";
+import Header from "../components/SymptomChecker/Header";
 
 function SymptomsChecker() {
 
-    // We need to fetch the symptoms from
-    // GET /symptom-checker/symptoms
-    const symptomsData = getSymptomsData()
-
     return (
-        <div>
-            <div className="m-10" />
-            <div className="container mx-10">
-                <h1>First of all we need to fetch data...</h1>
-                <h1>Have you ever been diagnosed with one of the following?:</h1>
-                {symptomsData.symptoms.map(symptomData => {
-                    return (
-                        <div>{symptomData.name}</div>
-                    )
-                })}
+        <div className="bg-base h-full">
+            <div className="container mx-auto">
+                <div className="w-full flex flex-col justify-between">
+                    <div className="grid mx-auto max-w-[1024px] min-h-full w-full rounded bg-white drop-shadow-2xl my-20 p-10">
+                        <Header />
+                        <SymptomForm />
+                    </div>
+                </div>
             </div>
-            {/* container in white? */}
-            <div className="m-10" />
         </div>
     );
 }

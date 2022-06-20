@@ -1,16 +1,15 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Results from './routes/Results';
 import SymptomChecker from './routes/SymptomChecker';
 import Home from './routes/Home';
+import NavBar from './components/Navigation/NavBar';
 
 function App() {
   return (
     <BrowserRouter>
-      <div>
-        <h1 className='text-3xl text-left font-semibold p-4'>
-          <Link to="/">SSymptomC.</Link>
-        </h1>
+      <div className='h-screen flex flex-col'>
+        <NavBar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/symptom-checker" element={<SymptomChecker />} />

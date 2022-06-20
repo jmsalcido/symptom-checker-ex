@@ -4,10 +4,8 @@ import GetStarted from "../components/Home/GetStarted";
 
 function Home() {
     return (
-        <div>
-            <div className="m-10"/>
+        <div className="bg-pachyderm h-full">
             <GetStarted />
-            <div className="m-10"/>
             <GetResults />
         </div>
     );
