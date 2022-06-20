@@ -11,8 +11,8 @@ function GetStarted() {
     ]
 
     return (
-        <div className='w-full flex flex-col justify-between bg-white'>
-            <div className="grid md:grid-cols-2 max-w-[1240px] m-auto">
+        <div className='w-full flex flex-col justify-between bg-white py-10'>
+            <div className="grid md:grid-cols-2 max-w-[1240px] m-auto px-16">
                 <div className='flex flex-col justify-center md:items-start w-full px-2 py-8'>
                     <p className='text-2xl'>Fast and Easy.</p>
                     <h1 className='py-3 text-5xl font-bold'>Symptom Checker</h1>
@@ -24,7 +24,9 @@ function GetStarted() {
                             )
                         })}
                     </ul>
-                    <button className='my-4 py-3 px-12'><Link to="/symptoms">Get Started</Link></button>
+                    <button className='my-4 py-3 px-12'>
+                        <Link to="/symptom-checker">Get Started</Link>
+                    </button>
                 </div>
                 <div>
                     <img src={checker} alt="/" className="w-full" />

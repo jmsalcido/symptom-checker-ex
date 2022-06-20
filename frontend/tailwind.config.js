@@ -12,9 +12,6 @@ module.exports = {
         bond: '#D5DED9',
         pachyderm: '#7A6A53',
         forever: '#99B2B7'
-      },
-      container: {
-        padding: '3rem'
       }
     },
   },
