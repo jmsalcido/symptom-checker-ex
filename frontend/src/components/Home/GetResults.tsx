@@ -16,7 +16,7 @@ function GetResults() {
                         <h1 className='py-3 text-5xl font-bold'>Verify Results</h1>
                         <p className='text-2xl'>One result per check.</p>
                         <Link to="/results">
-                            <button className='button_light my-4 py-3 px-24'>
+                            <button className='light my-4 py-3 px-24'>
                                 Get Results
                             </button>
                         </Link>

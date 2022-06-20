@@ -4,12 +4,17 @@
 
 @layer base {
 
-    .button_normal {
-        @apply text-white bg-pachyderm bg-pachyderm
-        hover:bg-kind-giant hover:text-white rounded-full
+    button.base {
+        @apply text-white bg-pachyderm bg-pachyderm rounded-full
+        hover:bg-kind-giant hover:text-white
     }
 
-    .button_light {
+    button:disabled {
+        @apply text-black bg-gray-500 bg-gray-500
+        hover:bg-gray-700 hover:text-black cursor-not-allowed
+    }
+
+    button.light {
         @apply text-white bg-forever bg-forever
         hover:bg-bond hover:text-white rounded-full
     }

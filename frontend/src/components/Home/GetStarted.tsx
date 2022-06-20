@@ -26,7 +26,7 @@ function GetStarted() {
                             })}
                         </ul>
                         <Link to="/symptom-checker">
-                            <button className='button_normal my-4 py-3 px-24'>
+                            <button className='base my-4 py-3 px-24'>
                                 Get Started
                             </button>
                         </Link>

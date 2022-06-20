@@ -15,7 +15,7 @@ function SymptomRowField(props: {
                 <div className="w-[90%] pl-10">
                     {props.data.name}
                 </div>
-                <button type="button" className="button_light p-1 px-2 m-2 place-items-center" onClick={onClick}>
+                <button type="button" className="light p-1 px-2 m-2 place-items-center" onClick={onClick}>
                     + ADD
                 </button>
             </div>

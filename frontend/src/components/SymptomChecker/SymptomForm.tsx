@@ -46,6 +46,7 @@ function SymptomForm() {
     })
 
     const handleSearchSymptom = (searchTerm: string) => {
+        // TODO here I need to use axios or something to call the backend.
         console.log(`sending to the backend the search term: ${searchTerm}`)
         setTimeout(() => {
             setSymptomData(dummySymptomData.filter(x => x.name.includes(searchTerm)))
@@ -74,7 +75,7 @@ function SymptomForm() {
                         onSearchClick={handleSearchSymptom}
                         onAddSymptomClick={handleAddSymptom}
                         onDeleteSymptomClick={() => { }} />
-                    <button className="button_normal my-10 p-2 px-16" type="submit">
+                    <button className="base my-10 p-2 px-16" type="submit" disabled={formData.symptoms.length === 0}>
                         SUBMIT
                     </button>
                 </form>
