@@ -13,9 +13,6 @@ Main page, contains important info on how to use the web app and links to start 
 ### Symptoms Selection:
 Symptoms page will be a view to select only the symptoms you are experiencing, the data will be filled from the backend.
 
-### Quiz per Symptom:
-After a symptom is selected, we will ask to capture the frequency of each symptom on a quiz like page per symptom.
-
 ### SymptomsResult:
 This page will be the result of calling your symptoms + frequencies and will return the job id that we need to store to verify each result.
 
