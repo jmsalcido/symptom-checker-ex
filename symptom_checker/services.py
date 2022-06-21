@@ -1,82 +1,52 @@
-from xml.etree import ElementTree
-
-import requests
 from rest_framework import status as http_status
 
-from symptom_checker.models import OrphadataDisorder, OrphadataSymptom, Symptoms, Disorders, SymptomSearchException
+from symptom_checker.models import SymptomSearchException, OrphadataModel
 from symptom_checker.serializers import SymptomSerializer
 
 
-class OrphadataService:
-    def __init__(self, orphadata_model=None):
-        self.url = "http://www.orphadata.org/data/xml/en_product4.xml"
-        self.orphadata_model = orphadata_model
+class OrphadataDataService:
+    def __init__(self):
+        self.orphadata = OrphadataModel()
+        self.orphadata.load_data()
 
-    def load_data(self):
-        try:
-            response = requests.get(self.url)
-            xml_element = ElementTree.fromstring(response.content)
+    def match_disorders(self, symptom_ids):
+        # for each disorder
+        disorders = self.orphadata.all_disorders()
+        for disorder in disorders:
+            # check if the symptom_ids are relevant.
+            pass
+        return False
 
-            if xml_element is None:
-                return
+    def search(self, query):
+        symptom_items = self.orphadata.all_symptoms().values()
 
-            disorder_elements = xml_element.findall('HPODisorderSetStatusList/HPODisorderSetStatus/Disorder')
-            if len(disorder_elements) == 0:
-                return
+        response = []
 
-            disorders = Disorders()
-            symptoms = Symptoms()
+        # do a naive and simple search for the symptom name in the cache
+        for symptom in symptom_items:
+            if query.lower() in symptom.term.lower():
+                response.append({"id": symptom.hpo_id, "name": symptom.term})
 
-            for disorder_element in disorder_elements:
-                disorder_name = disorder_element.find('Name').text
-                orpha_code = int(disorder_element.find('OrphaCode').text)
-                orphadata_disorder = OrphadataDisorder(orpha_code=orpha_code, name=disorder_name)
+        return response
 
-                symptom_relationship_element = disorder_element \
-                    .findall('HPODisorderAssociationList/HPODisorderAssociation')
-                symptom_frequencies = []
-                for rel_element in symptom_relationship_element:
-                    hpo_id = rel_element.find('HPO/HPOId').text
-                    term = rel_element.find('HPO/HPOTerm').text
 
-                    orphadata_symptom = OrphadataSymptom(hpo_id=hpo_id, term=term)
-                    frequency = rel_element.find('HPOFrequency/Name').text
-                    symptoms.add(orphadata_symptom)
+class SymptomCheckerDisorderService:
+    def __init__(self):
+        self.symptom_checker_data_service = OrphadataDataService()
 
-                    symptom_frequencies.append((hpo_id, frequency))
-
-                orphadata_disorder.symptom_frequencies = symptom_frequencies
-                disorders.add(orphadata_disorder)
-
-            # set all caches again
-            symptoms.save()
-            disorders.save()
-        except requests.exceptions.RequestException:
-            # we can submit an error to sentry/rollbar/bugsnag to let devs know that there is an error happening while
-            # trying to connect to orphadata
-            print("There was an error trying to load data")
-            return
-        except ElementTree.ParseError:
-            return
+    def match(self, symptom_checker_request):
+        # for all disorders...
+        disorders = self.symptom_checker_data_service.match_disorders(symptom_checker_request.hpo_ids)
+        # check the symptoms if it's contained
+        pass
 
 
 class SymptomCheckerSearchService:
     def __init__(self):
-        self.orphadata_service = OrphadataService()
-        self.symptoms = Symptoms()
+        self.symptom_checker_data_service = OrphadataDataService()
 
     def search(self, query):
-        symptom_items = self.symptoms.all().values()
-        if len(symptom_items) == 0:
-            self.orphadata_service.load_data()
-            symptom_items = self.symptoms.all().values()
-
-        response = []
-
-        # do a naive and simple search for the symptom name
-        for symptom in symptom_items:
-            if query.lower() in symptom.term.lower():
-                response.append({"id": symptom.hpo_id, "name": symptom.term})
+        response = self.symptom_checker_data_service.search(query)
 
         if len(response) == 0:
             raise SymptomSearchException("No symptoms with query: {} found".format(query),
@@ -87,8 +57,3 @@ class SymptomCheckerSearchService:
             return serializer.data
         else:
             raise SymptomSearchException()
-
-
-class SymptomCheckerService:
-    def __init__(self):
-        pass

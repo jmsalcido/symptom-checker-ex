@@ -25,7 +25,6 @@ class SymptomChecker(APIView):
         serializer = SymptomCheckerRequestSerializer(data=request.data)
         if serializer.is_valid():
             request_data = serializer.save()
-            request_data.hpo_ids
         else:
             return Response({"error": "There was an error while parsing your request"},
                             status=status.HTTP_400_BAD_REQUEST)
