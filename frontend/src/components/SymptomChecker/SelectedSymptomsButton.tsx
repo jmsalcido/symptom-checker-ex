@@ -1,4 +1,4 @@
-import { SymptomData } from "./SymptomForm";
+import { SymptomData } from "../../types/symptoms";
 
 function SelectedSymptomsButton(props: {
     symptomData: SymptomData

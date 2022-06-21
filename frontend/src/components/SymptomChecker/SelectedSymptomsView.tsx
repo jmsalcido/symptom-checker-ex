@@ -1,5 +1,5 @@
+import { SymptomData } from "../../types/symptoms";
 import SelectedSymptomsButton from "./SelectedSymptomsButton";
-import { SymptomData } from "./SymptomForm";
 
 function SelectedSymptomsView(props: {
     selectedSymptoms: SymptomData[],

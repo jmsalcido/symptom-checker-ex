@@ -1,6 +1,7 @@
+import { SymptomData } from "../../types/symptoms";
 import SearchBar from "./SearchBar";
 import SelectedSymptomsView from "./SelectedSymptomsView";
-import { SymptomData } from "./SymptomForm";
+
 import SymptomInputSearchResult from "./SymptomInputSearchResult";
 
 function SymptomInputSearch(props: {

@@ -1,41 +1,7 @@
 import { useState } from "react";
+import { SymptomData, SymptomCheckerRequest } from "../../types/symptoms";
 import SymptomInputSearch from "./SymptomInputSearch";
-
-export type SymptomData = {
-    id: string,
-    name: string,
-}
-
-type SymptomCheckerRequest = {
-    symptoms: string[],
-}
-
-const dummySymptomData = [
-    {
-        id: "HPO:00001",
-        name: "finger 1 pain this is a very large text"
-    },
-    {
-        id: "HPO:00002",
-        name: "finger 2 pain"
-    },
-    {
-        id: "HPO:00003",
-        name: "finger 3 pain"
-    },
-    {
-        id: "HPO:00004",
-        name: "finger 4 pain"
-    },
-    {
-        id: "HPO:00005",
-        name: "nothing to do with f-gers"
-    },
-    {
-        id: "HPO:00006",
-        name: "it just says finger"
-    },
-]
+import * as symptoms_service from '../../services/symptoms';
 
 function SymptomForm() {
     const [symptomData, setSymptomData] = useState<SymptomData[]>([])
@@ -45,12 +11,12 @@ function SymptomForm() {
         symptoms: []
     })
 
-    const handleSearchSymptom = (searchTerm: string) => {
+    const handleSearchSymptom = async (searchTerm: string) => {
         // TODO here I need to use axios or something to call the backend.
         console.log(`sending to the backend the search term: ${searchTerm}`)
-        setTimeout(() => {
-            setSymptomData(dummySymptomData.filter(x => x.name.includes(searchTerm)))
-        }, 5000)
+
+        const symptoms = await symptoms_service.searchSymptoms(searchTerm)
+        setSymptomData(symptoms.symptoms)
     }
 
     const handleAddSymptom = (symptomData: SymptomData) => {
@@ -62,6 +28,10 @@ function SymptomForm() {
 
             setFormData(newFormData)
         }
+    }
+
+    const handleSubmitSymptoms = () => {
+        
     }
 
     return (
