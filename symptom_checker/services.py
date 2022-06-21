@@ -79,7 +79,7 @@ class SymptomCheckerSearchService:
 
         # do a naive and simple search for the symptom name
         for k, v in symptom_names.items():
-            if query in v:
+            if query.lower() in v.lower():
                 symptoms.append({"id": k, "name": v})
 
         return symptoms

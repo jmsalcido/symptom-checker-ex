@@ -6,7 +6,6 @@
 - [x] Parse XML and store data in static cache for now
 - [x] Create endpoint for searching symptoms
 - [ ] Create endpoint for sending symptoms
-- [ ] Add Celery support for job processing in background (redis?)
 - [ ] Create endpoint for looking at results
 
 ### Backend EXTRA POINTS
