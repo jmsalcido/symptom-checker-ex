@@ -160,7 +160,10 @@ class CacheResults:
 
     @staticmethod
     def find(result_id):
-        return cache.get(CacheResults.cache_key()).get(result_id)
+        results = cache.get(CacheResults.cache_key())
+        if results is None:
+            return None
+        return results.get(result_id)
 
 
 class OrphadataDisorderSymptoms:
@@ -232,6 +235,13 @@ class SymptomCheckerRequest:
         if hpo_ids is None:
             hpo_ids = []
         self.hpo_ids = hpo_ids
+
+
+class ResourceNotFoundException(Exception):
+    def __init__(self, message="The resource you were looking for is not found",
+                 status_code=status.HTTP_404_NOT_FOUND):
+        self.message = message
+        self.status_code = status_code
 
 
 class SymptomSearchException(Exception):

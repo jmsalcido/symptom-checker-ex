@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from symptom_checker.models import SymptomSearchException, SymptomCheckerResponse
+from symptom_checker.models import SymptomSearchException, SymptomCheckerResponse, ResourceNotFoundException
 from symptom_checker.serializers import SymptomCheckerRequestSerializer, SymptomSerializer, \
     SymptomCheckerResponseSerializer, SymptomCheckerResultResponseSerializer
 from symptom_checker.services import SymptomCheckerSearchService, SymptomCheckerMatchService, \
@@ -50,7 +50,10 @@ class SymptomCheckerResult(APIView):
     @staticmethod
     def get(request, result_id):
         # TODO: catch exception when thrown from the result service
-        result_service = SymptomCheckerResultService()
-        result = result_service.results(str(result_id))
-        response_serializer = SymptomCheckerResultResponseSerializer(instance=result)
-        return Response(response_serializer.data)
+        try:
+            result_service = SymptomCheckerResultService()
+            result = result_service.results(str(result_id))
+            response_serializer = SymptomCheckerResultResponseSerializer(instance=result)
+            return Response(response_serializer.data)
+        except ResourceNotFoundException as e:
+            return Response({"error": e.message}, e.status_code)

@@ -4,7 +4,7 @@ from operator import attrgetter
 from rest_framework import status as http_status
 
 from symptom_checker.models import SymptomSearchException, OrphadataModel, OrphadataDisorderWeight, CacheResults, \
-    SymptomCheckerResultResponse
+    SymptomCheckerResultResponse, ResourceNotFoundException
 
 
 class OrphadataDataService:
@@ -118,6 +118,9 @@ class SymptomCheckerResultService:
         matching_disorders = self.__symptom_checker_data_service.find_results(result_id)
         # TODO: if not present or empty, throw error
 
+        if matching_disorders is None:
+            raise ResourceNotFoundException
+
         self.__disorder_symptom_service.load_disorder_symptoms(matching_disorders)
         symptoms = self.__disorder_symptom_service.load_symptoms()
 
@@ -150,6 +153,10 @@ class SymptomCheckerSearchService:
         self.__symptom_checker_data_service = OrphadataDataService()
 
     def search(self, query):
+        if len(query) <= 2:
+            raise SymptomSearchException("Too few characters to do a search",
+                                         http_status.HTTP_400_BAD_REQUEST)
+
         response = self.__symptom_checker_data_service.search(query)
 
         if len(response) == 0:
