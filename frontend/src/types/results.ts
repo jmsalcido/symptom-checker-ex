@@ -1,19 +1,4 @@
-export type SymptomData = {
-    id: string;
-    name: string;
-};
-
-export type SymptomCheckerRequest = {
-    hpo_ids: string[];
-};
-
-export type SymptomSearchResponse = {
-    symptoms: SymptomData[]
-}
-
-export type SymptomSearchRequest = {
-    search: string
-}
+import { SymptomData } from "./symptoms"
 
 export type Disorder = {
     orpha_code: number,
@@ -21,7 +6,7 @@ export type Disorder = {
 }
 
 export type MatchingDisorder = {
-    disorder: Disorder[],
+    disorder: Disorder,
     excluded_symptoms: string[],
     frequent_symptoms: string[],
     matching_symptoms: Map<string, string>[],
@@ -32,12 +17,14 @@ export type MatchingDisorder = {
     weight: number,
 }
 
+export type Result = {
+    result_id: string,
+    matching_disorders: MatchingDisorder[],
+    symptoms: Map<String, SymptomData>
+}
+
 export type ResultResponse = {
     result_id: string,
     matching_disorders: MatchingDisorder[],
     symptoms: SymptomData[]
-}
-
-export type SymptomCheckerResponse = {
-    result_id: string
 }
