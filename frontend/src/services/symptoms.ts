@@ -15,27 +15,27 @@ const postRequestOptions = (body: Object) => {
     }
 }
 
-export const sendSymptoms = async (request: SymptomCheckerRequest) => {
-    const path = `/symptom-checker/`
-    const response = await fetch(`${apiUrl}${path}`, postRequestOptions(request));
-    const body = await response.json()
+const doPostRequest = async (path: string, requestBody: object) => {
+    const response = await fetch(`${apiUrl}${path}`, postRequestOptions(requestBody));
+    const responseBody = await response.json()
     if (response.ok) {
-        return body;
+        return responseBody;
     } else {
-        throw Error(body.error)
+        throw Error(responseBody.error)
     }
+}
+
+export const sendSymptoms = async (requestBody: SymptomCheckerRequest) => {
+    const path = `/symptom-checker/`
+    return doPostRequest(path, requestBody)
 }
 
 export const searchSymptoms = async (query: string): Promise<SymptomSearchResponse> => {
     const path = `/symptom-checker/symptom/search/`
 
-    const requestData: SymptomSearchRequest = {
+    const requestBody: SymptomSearchRequest = {
         search: query
     }
 
-    return await fetch(`${apiUrl}${path}`, postRequestOptions(requestData))
-        .then((response) => response.json())
-        .then((data: SymptomSearchResponse) => {
-            return data
-        })
+    return doPostRequest(path, requestBody)
 }
