@@ -1,59 +1,135 @@
+from operator import attrgetter
+
 from rest_framework import status as http_status
 
-from symptom_checker.models import SymptomSearchException, OrphadataModel
-from symptom_checker.serializers import SymptomSerializer
+from symptom_checker.models import SymptomSearchException, OrphadataModel, OrphadataDisorderWeight
 
 
 class OrphadataDataService:
     def __init__(self):
-        self.orphadata = OrphadataModel()
-        self.orphadata.load_data()
+        self.__orphadata = OrphadataModel()
+        self.__orphadata.load_data()
+        self.__weight_by_frequency = {
+            'obligate': 1,
+            'very frequent': 0.8,
+            'frequent': 0.3,
+            'occasional': 0.05,
+            'very rare': 0.04,
+            'excluded': -1,
+        }
+
+    # def find_symptoms_for_disorders(self, disorders):
+    #     symptoms = self.__orphadata.all_symptoms()
+    #     for disorder in disorders:
+    #         disorder.orpha_code
+    #     return []
 
     def match_disorders(self, symptom_ids):
+        """`match_disorder` OrphadataDataService is a naive class, it uses a bunch of operations to find out the
+        "relationship" in the caches """
         # for each disorder
-        disorders = self.orphadata.all_disorders()
-        for disorder in disorders:
-            # check if the symptom_ids are relevant.
-            pass
-        return False
+        disorders = self.__orphadata.all_disorders()
+        match_by_weight = []
+        for disorder in disorders.values():
+            # check if the symptom_ids are relevant
+            disorder_weight = []
+            matching_symptoms = {}
+            disorder_symptoms_frequencies = self.__orphadata.find_disorder_symptoms(disorder.orpha_code)
+            for symptom_id in symptom_ids:
+                frequency = disorder_symptoms_frequencies.get(symptom_id)
+                if frequency is not None:
+                    matching_symptoms[symptom_id] = frequency
+                    disorder_weight.append(self.__weight_by_frequency[frequency])
+
+            disorder_weight = round(sum(disorder_weight), 6)
+
+            if disorder_weight == 0:
+                break
+
+            orphadata_disorder_weight = OrphadataDisorderWeight(disorder,
+                                                                disorder_weight,
+                                                                matching_symptoms)
+            match_by_weight.append(orphadata_disorder_weight)
+        match_by_weight.sort(reverse=True, key=attrgetter('weight'))
+        return match_by_weight
 
     def search(self, query):
-        symptom_items = self.orphadata.all_symptoms().values()
+        """`search` OrphadataDataService is a naive class, we simply match the query to any substring in the symptom
+        name to find out """
+        symptom_items = self.__orphadata.all_symptoms().values()
 
         response = []
 
         # do a naive and simple search for the symptom name in the cache
         for symptom in symptom_items:
             if query.lower() in symptom.term.lower():
-                response.append({"id": symptom.hpo_id, "name": symptom.term})
+                response.append(symptom)
 
         return response
 
+    def load_disorder_symptoms(self, matching_disorders):
+        for match in matching_disorders:
+            disorder = match.orphadata_disorder
+            disorder_symptoms = self.__orphadata.find_disorder_symptoms(disorder.orpha_code)
+            obligate_symptoms = set()
+            very_frequent_symptoms = set()
+            frequent_symptoms = set()
+            occasional_symptoms = set()
+            very_rare_symptoms = set()
+            excluded_symptoms = set()
+            for symptom_id, frequency in disorder_symptoms.items():
+                if frequency == 'obligate':
+                    obligate_symptoms.add(symptom_id)
+                elif frequency == 'very frequent':
+                    very_frequent_symptoms.add(symptom_id)
+                elif frequency == 'frequent':
+                    frequent_symptoms.add(symptom_id)
+                elif frequency == 'occasional':
+                    occasional_symptoms.add(symptom_id)
+                elif frequency == 'very rare':
+                    very_rare_symptoms.add(symptom_id)
+                elif frequency == 'excluded':
+                    excluded_symptoms.add(symptom_id)
+            match.obligate_symptoms = obligate_symptoms
+            match.very_frequent_symptoms = very_frequent_symptoms
+            match.frequent_symptoms = frequent_symptoms
+            match.occasional_symptoms = occasional_symptoms
+            match.very_rare_symptoms = very_rare_symptoms
+            match.excluded_symptoms = excluded_symptoms
 
-class SymptomCheckerDisorderService:
+    def load_symptoms(self):
+        return list(self.__orphadata.all_symptoms().values())
+
+
+class SymptomCheckerMatchService:
     def __init__(self):
-        self.symptom_checker_data_service = OrphadataDataService()
+        self.__symptom_checker_data_service = OrphadataDataService()
 
     def match(self, symptom_checker_request):
-        # for all disorders...
-        disorders = self.symptom_checker_data_service.match_disorders(symptom_checker_request.hpo_ids)
-        # check the symptoms if it's contained
-        pass
+        matching_disorders = self.__symptom_checker_data_service.match_disorders(symptom_checker_request.hpo_ids)
+        return matching_disorders[0:5]
+
+
+class SymptomCheckerDisorderSymptomService:
+    def __init__(self):
+        self.__symptom_checker_data_service = OrphadataDataService()
+
+    def load_disorder_symptoms(self, matching_disorders):
+        self.__symptom_checker_data_service.load_disorder_symptoms(matching_disorders)
+
+    def load_symptoms(self):
+        return self.__symptom_checker_data_service.load_symptoms()
 
 
 class SymptomCheckerSearchService:
     def __init__(self):
-        self.symptom_checker_data_service = OrphadataDataService()
+        self.__symptom_checker_data_service = OrphadataDataService()
 
     def search(self, query):
-        response = self.symptom_checker_data_service.search(query)
+        response = self.__symptom_checker_data_service.search(query)
 
         if len(response) == 0:
             raise SymptomSearchException("No symptoms with query: {} found".format(query),
                                          http_status.HTTP_404_NOT_FOUND)
 
-        serializer = SymptomSerializer(data=response, many=True)
-        if serializer.is_valid():
-            return serializer.data
-        else:
-            raise SymptomSearchException()
+        return response

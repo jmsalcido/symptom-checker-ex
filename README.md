@@ -52,25 +52,21 @@ type SymptomsCheckerResponse = {
 This can return us a "Your data is being processed" and give an id to verify in the future.
 
 `GET /symptom-checker/results/{id}`
-```json
+
+```typescript
 // response
-{
-    // this will let us know if the result is processed already or not, we can show 1 page or the other depending on this state
-    // like: "We are still processing your info, thank you!"
-    "status": true|false,
-
-    // list of symptoms selected in the symtopm-checker
-    "symptom_search": [...],
-
-    // nullable, only if status is true should be present
-    // response will be sorted from the backend.
-    "possible_diseases": [
-        {
-            "name": "Disease A",
-            "symptoms": [
-              
-            ]
-        }
-    ]
+type Response = {
+  "id": int,
+  // list of symptoms selected in the symtopm-checker
+  "symptoms": string[],
+  // nullable, only if status is true should be present
+  // response will be sorted from the backend.
+  "possible_disorders": [
+    {
+        "orpha_code": string
+        "name": string,
+        "symptoms": SymptomData[]
+    }
+  ]
 }
 ```
