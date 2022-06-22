@@ -14,7 +14,10 @@ function SymptomForm() {
     })
 
     const [isSearching, setIsSearching] = useState(false)
-    const [isError, setIsError] = useState(false)
+    const [isSearchError, setIsSearchError] = useState(false)
+    const [isSubmit, setIsSubmit] = useState(false)
+    const [isSubmitError, setIsSubmitError] = useState(false)
+    const [isSubmitSuccess, setIsSubmitSuccess] = useState(false)
 
     const handleSearchSymptom = async (searchTerm: string) => {
         setIsSearching(true)
@@ -23,9 +26,9 @@ function SymptomForm() {
             symptoms_service.searchSymptoms(searchTerm)
                 .then((data: SymptomSearchResponse) => {
                     setSymptomData(data.symptoms)
-                    setIsError(false)
+                    setIsSearchError(false)
                 }).catch((error) => {
-                    setIsError(true)
+                    setIsSearchError(true)
                 })
             setIsSearching(false)
         }, 500)
@@ -42,16 +45,41 @@ function SymptomForm() {
         }
     }
 
-    const handleSubmitSymptoms = () => {
-        symptoms_service.sendSymptoms(formData)
-            .then((data: SymptomCheckerResponse) => {
-                navigate(`/results/${data.result_id}`)
-                return data
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+    const handleSubmitSuccess = (resultId: string) => {
+        setIsSubmitSuccess(true)
+        setTimeout(() => {
+            navigate(`/results/${resultId}`)
+        }, 3000)
     }
+
+    const handleSubmitFailure = () => {
+        setIsSubmit(false)
+        setIsSubmitError(true)
+    }
+
+    const handleSubmitClick = () => {
+        setIsSubmit(true)
+        setIsSubmitError(false)
+        setIsSubmitSuccess(false)
+        setTimeout(() => {
+            symptoms_service.sendSymptoms(formData)
+                .then((data: SymptomCheckerResponse) => {
+                    handleSubmitSuccess(data.result_id)
+                    return data
+                })
+                .catch((error) => {
+                    handleSubmitFailure()
+                })
+        }, 500)
+    }
+
+    const errorOnSubmitView = isSubmitError == true
+        ? (<h1>Error while submitting symptoms, try again.</h1>)
+        : null
+
+    const submitSuccessView = isSubmitSuccess == true
+        ? (<h1>We have a result!, redirecting you in 3 seconds...</h1>)
+        : null
 
     return (
         <div className="p-10">
@@ -61,15 +89,17 @@ function SymptomForm() {
                 <SymptomInputSearch symptomData={symptomData}
                     selectedSymptoms={selectedSymptoms}
                     isSearching={isSearching}
-                    isError={isError}
+                    isError={isSearchError}
                     onSearchClick={handleSearchSymptom}
                     onAddSymptomClick={handleAddSymptom}
                     onDeleteSymptomClick={() => { }} />
                 <button className="base my-10 p-2 px-16" type="button"
-                    onClick={handleSubmitSymptoms}
-                    disabled={formData.hpo_ids.length === 0} >
+                    onClick={handleSubmitClick}
+                    disabled={isSubmit || formData.hpo_ids.length === 0} >
                     SUBMIT
                 </button>
+                {errorOnSubmitView}
+                {submitSuccessView}
             </div>
         </div>
     );
