@@ -1,14 +1,17 @@
+import uuid
 from operator import attrgetter
 
 from rest_framework import status as http_status
 
-from symptom_checker.models import SymptomSearchException, OrphadataModel, OrphadataDisorderWeight
+from symptom_checker.models import SymptomSearchException, OrphadataModel, OrphadataDisorderWeight, CacheResults, \
+    SymptomCheckerResultResponse
 
 
 class OrphadataDataService:
     def __init__(self):
         self.__orphadata = OrphadataModel()
         self.__orphadata.load_data()
+        self.__results = CacheResults()
         self.__weight_by_frequency = {
             'obligate': 1,
             'very frequent': 0.8,
@@ -18,11 +21,11 @@ class OrphadataDataService:
             'excluded': -1,
         }
 
-    # def find_symptoms_for_disorders(self, disorders):
-    #     symptoms = self.__orphadata.all_symptoms()
-    #     for disorder in disorders:
-    #         disorder.orpha_code
-    #     return []
+    def store_results(self, result_id, matching_disorders):
+        self.__results.save(result_id, matching_disorders)
+
+    def find_results(self, result_id):
+        return self.__results.find(result_id)
 
     def match_disorders(self, symptom_ids):
         """`match_disorder` OrphadataDataService is a naive class, it uses a bunch of operations to find out the
@@ -99,6 +102,27 @@ class OrphadataDataService:
 
     def load_symptoms(self):
         return list(self.__orphadata.all_symptoms().values())
+
+
+class SymptomCheckerResultService:
+    def __init__(self):
+        self.__symptom_checker_data_service = OrphadataDataService()
+        self.__disorder_symptom_service = SymptomCheckerDisorderSymptomService()
+
+    def save(self, matching_disorders):
+        result_id = str(uuid.uuid1())
+        self.__symptom_checker_data_service.store_results(result_id, matching_disorders)
+        return result_id
+
+    def results(self, result_id):
+        matching_disorders = self.__symptom_checker_data_service.find_results(result_id)
+        # TODO: if not present or empty, throw error
+
+        self.__disorder_symptom_service.load_disorder_symptoms(matching_disorders)
+        symptoms = self.__disorder_symptom_service.load_symptoms()
+
+        return SymptomCheckerResultResponse(result_id=uuid.uuid1(), matching_disorders=matching_disorders,
+                                            symptoms=symptoms)
 
 
 class SymptomCheckerMatchService:

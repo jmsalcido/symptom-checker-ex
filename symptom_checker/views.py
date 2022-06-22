@@ -1,14 +1,12 @@
-import uuid
-
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from symptom_checker.models import SymptomSearchException, SymptomCheckerResponse
 from symptom_checker.serializers import SymptomCheckerRequestSerializer, SymptomSerializer, \
-    SymptomCheckerResponseSerializer
+    SymptomCheckerResponseSerializer, SymptomCheckerResultResponseSerializer
 from symptom_checker.services import SymptomCheckerSearchService, SymptomCheckerMatchService, \
-    SymptomCheckerDisorderSymptomService
+    SymptomCheckerResultService
 
 
 class SymptomCheckerSearch(APIView):
@@ -37,15 +35,22 @@ class SymptomCheckerMatch(APIView):
                 return Response({"error": "No matching disorders"},
                                 status=status.HTTP_404_NOT_FOUND)
 
-            disorder_symptom_service = SymptomCheckerDisorderSymptomService()
-            disorder_symptom_service.load_disorder_symptoms(matching_disorders)
+            result_service = SymptomCheckerResultService()
+            result_id = result_service.save(matching_disorders)
+            response = SymptomCheckerResponse(result_id=result_id)
 
-            symptoms = disorder_symptom_service.load_symptoms()
-            instance = SymptomCheckerResponse(result_id=uuid.uuid1(), matching_disorders=matching_disorders,
-                                              symptoms=symptoms)
-            response_serializer = SymptomCheckerResponseSerializer(
-                instance=instance)
+            response_serializer = SymptomCheckerResponseSerializer(response)
             return Response(response_serializer.data)
         else:
             return Response({"error": "There was an error while parsing your request"},
                             status=status.HTTP_400_BAD_REQUEST)
+
+
+class SymptomCheckerResult(APIView):
+    @staticmethod
+    def get(request, result_id):
+        # TODO: catch exception when thrown from the result service
+        result_service = SymptomCheckerResultService()
+        result = result_service.results(str(result_id))
+        response_serializer = SymptomCheckerResultResponseSerializer(instance=result)
+        return Response(response_serializer.data)

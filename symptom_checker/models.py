@@ -17,11 +17,10 @@ class SingletonMeta(type):
 
 class OrphadataModel(metaclass=SingletonMeta):
 
-    def __init__(self, orphadata_model=None):
+    def __init__(self):
         # noinspection HttpUrlsUsage
         self.url = "http://www.orphadata.org/data/xml/en_product4.xml"
-        self.orphadata_model = orphadata_model
-        self.loaded = False
+        self.__loaded = False
         self.__disorders = CacheDisorders()
         self.__symptoms = CacheSymptoms()
         self.__disorder_symptoms = CacheDisorderSymptoms()
@@ -36,7 +35,7 @@ class OrphadataModel(metaclass=SingletonMeta):
         return self.__disorder_symptoms.find(disorder_orpha_code)
 
     def load_data(self):
-        if self.loaded:
+        if self.__loaded:
             return
 
         try:
@@ -76,7 +75,7 @@ class OrphadataModel(metaclass=SingletonMeta):
             self.__symptoms.save()
             self.__disorders.save()
             self.__disorder_symptoms.save()
-            self.loaded = True
+            self.__loaded = True
         except requests.exceptions.RequestException:
             # we can submit an error to sentry/rollbar/bugsnag to let devs know that there is an error happening while
             # trying to connect to orphadata
@@ -146,6 +145,24 @@ class CacheDisorders:
         return cache.get(CacheDisorders.cache_key())
 
 
+class CacheResults:
+    @staticmethod
+    def cache_key():
+        return "results"
+
+    def save(self, result_id, matching_disorders):
+        results = cache.get(CacheResults.cache_key())
+        if results is None:
+            cache.set(CacheResults.cache_key(), {})
+            results = {}
+        results[result_id] = matching_disorders
+        cache.set(CacheResults.cache_key(), results)
+
+    @staticmethod
+    def find(result_id):
+        return cache.get(CacheResults.cache_key()).get(result_id)
+
+
 class OrphadataDisorderSymptoms:
     def __init__(self, disorder_orpha_code, orphadata_symptom):
         self.disorder_orpha_code = disorder_orpha_code
@@ -195,6 +212,11 @@ class OrphadataSymptom:
 
 
 class SymptomCheckerResponse:
+    def __init__(self, result_id):
+        self.result_id = result_id
+
+
+class SymptomCheckerResultResponse:
     def __init__(self, result_id, matching_disorders=None, symptoms=None):
         if matching_disorders is None:
             matching_disorders = []

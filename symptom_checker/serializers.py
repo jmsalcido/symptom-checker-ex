@@ -1,17 +1,21 @@
 from rest_framework import serializers
 
-from symptom_checker.models import SymptomCheckerRequest, OrphadataDisorderWeight, OrphadataDisorder
+from symptom_checker.models import SymptomCheckerRequest
 
 
-class SymptomSerializer(serializers.Serializer):
-    id = serializers.CharField(allow_blank=False, allow_null=False, required=True, source="hpo_id")
-    name = serializers.CharField(allow_blank=False, allow_null=False, required=True, source="term")
+class SimpleSerializer(serializers.Serializer):
+    """update and create needed to be implemented always and ended up being `pass` all the time for simple ones"""
 
     def update(self, instance, validated_data):
         pass
 
     def create(self, validated_data):
         pass
+
+
+class SymptomSerializer(SimpleSerializer):
+    id = serializers.CharField(allow_blank=False, allow_null=False, required=True, source="hpo_id")
+    name = serializers.CharField(allow_blank=False, allow_null=False, required=True, source="term")
 
 
 class SymptomCheckerRequestSerializer(serializers.Serializer):
@@ -25,18 +29,12 @@ class SymptomCheckerRequestSerializer(serializers.Serializer):
         return SymptomCheckerRequest(**validated_data)
 
 
-class DisorderSerializer(serializers.Serializer):
+class DisorderSerializer(SimpleSerializer):
     orpha_code = serializers.IntegerField(required=True)
     name = serializers.CharField(required=True)
 
-    def update(self, instance, validated_data):
-        pass
 
-    def create(self, validated_data):
-        pass
-
-
-class DisorderWeightSerializer(serializers.Serializer):
+class DisorderWeightSerializer(SimpleSerializer):
     disorder = DisorderSerializer(source="orphadata_disorder")
     matching_symptoms = serializers.DictField()
     weight = serializers.DecimalField(max_digits=10, decimal_places=3)
@@ -47,20 +45,12 @@ class DisorderWeightSerializer(serializers.Serializer):
     very_rare_symptoms = serializers.ListField(child=(serializers.CharField()))
     excluded_symptoms = serializers.ListField(child=(serializers.CharField()))
 
-    def update(self, instance, validated_data):
-        pass
 
-    def create(self, validated_data):
-        pass
+class SymptomCheckerResponseSerializer(SimpleSerializer):
+    result_id = serializers.UUIDField()
 
 
-class SymptomCheckerResponseSerializer(serializers.Serializer):
+class SymptomCheckerResultResponseSerializer(SimpleSerializer):
     result_id = serializers.UUIDField()
     matching_disorders = DisorderWeightSerializer(many=True)
     symptoms = SymptomSerializer(many=True)
-
-    def update(self, instance, validated_data):
-        pass
-
-    def create(self, validated_data):
-        pass

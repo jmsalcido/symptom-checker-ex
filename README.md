@@ -5,8 +5,8 @@
 - [x] Make models available in the admin panel
 - [x] Parse XML and store data in static cache for now
 - [x] Create endpoint for searching symptoms
-- [ ] Create endpoint for sending symptoms
-- [ ] Create endpoint for looking at results
+- [x] Create endpoint for sending symptoms
+- [x] Create endpoint for looking at results
 
 ### Backend EXTRA POINTS
 - [ ] Use database
