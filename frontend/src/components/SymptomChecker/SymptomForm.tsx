@@ -73,11 +73,11 @@ function SymptomForm() {
         }, 500)
     }
 
-    const errorOnSubmitView = isSubmitError == true
+    const errorOnSubmitView = isSubmitError === true
         ? (<h1>Error while submitting symptoms, try again.</h1>)
         : null
 
-    const submitSuccessView = isSubmitSuccess == true
+    const submitSuccessView = isSubmitSuccess === true
         ? (<h1>We have a result!, redirecting you in 3 seconds...</h1>)
         : null
 

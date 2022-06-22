@@ -14,8 +14,8 @@ function ResultDetailView(props: {
     const [isNotFound, setIsNotFound] = useState(false)
     const [isResult, setIsResult] = useState(false)
 
-    const showNotFound = isNotFound == false ? 'hidden' : ''
-    const showError = isError == false ? 'hidden' : ''
+    const showNotFound = isNotFound === false ? 'hidden' : ''
+    const showError = isError === false ? 'hidden' : ''
 
     useEffect(() => {
         getResult(props.result_id)
@@ -38,7 +38,7 @@ function ResultDetailView(props: {
             .catch((error) => {
                 setIsResult(false)
                 if (error instanceof StatusError) {
-                    if (error.statusCode == 404) {
+                    if (error.statusCode === 404) {
                         setIsNotFound(true)
                     }
                 } else {
