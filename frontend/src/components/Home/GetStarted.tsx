@@ -7,7 +7,7 @@ function GetStarted() {
 
     const steps = [
         "Select your symptoms",
-        "We will give you a ticket number to check your status"
+        "Get you results and a ticket number for future references"
     ]
 
     return (

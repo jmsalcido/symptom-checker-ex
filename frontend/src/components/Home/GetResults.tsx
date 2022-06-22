@@ -12,9 +12,9 @@ function GetResults() {
                         <img src={results} alt="/" className="w-full" />
                     </div>
                     <div className='flex flex-col justify-center md:items-start w-full px-12'>
-                        <p className='text-2xl'>Wanna see your results?</p>
-                        <h1 className='py-3 text-5xl font-bold'>Verify Results</h1>
-                        <p className='text-2xl'>One result per check.</p>
+                        <p className='text-2xl'>Wanna see your results again?</p>
+                        <h1 className='py-3 text-5xl font-bold'>View Results</h1>
+                        <p className='text-2xl'>One result per symptom selection.</p>
                         <Link to="/results">
                             <button className='light my-4 py-3 px-24'>
                                 Get Results

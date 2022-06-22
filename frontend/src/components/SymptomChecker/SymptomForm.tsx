@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SymptomData, SymptomCheckerRequest } from "../../types/symptoms";
+import { SymptomData, SymptomCheckerRequest, SymptomCheckerResponse, ErrorMessage } from "../../types/symptoms";
 import SymptomInputSearch from "./SymptomInputSearch";
 import * as symptoms_service from '../../services/symptoms';
 
@@ -8,30 +8,39 @@ function SymptomForm() {
 
     const [selectedSymptoms, setSelectedSymptoms] = useState<SymptomData[]>([])
     const [formData, setFormData] = useState<SymptomCheckerRequest>({
-        symptoms: []
+        hpo_ids: []
     })
 
     const handleSearchSymptom = async (searchTerm: string) => {
-        // TODO here I need to use axios or something to call the backend.
-        console.log(`sending to the backend the search term: ${searchTerm}`)
-
+        // TODO here we can set the status to loading the UI to show a "loading" screen
+        // ie: setLoadingStatus(false)
         const symptoms = await symptoms_service.searchSymptoms(searchTerm)
+        // TODO here we return back the status to not loading
+        // ALSO let the user know if there was an error.
+        // ie: setLoadingStatus(false)
         setSymptomData(symptoms.symptoms)
     }
 
     const handleAddSymptom = (symptomData: SymptomData) => {
-        if (!formData.symptoms.includes(symptomData.id)) {
+        if (!formData.hpo_ids.includes(symptomData.id)) {
             setSelectedSymptoms([...selectedSymptoms, symptomData])
 
             const newFormData: SymptomCheckerRequest = { ...formData }
-            newFormData.symptoms.push(symptomData.id)
+            newFormData.hpo_ids.push(symptomData.id)
 
             setFormData(newFormData)
         }
     }
 
     const handleSubmitSymptoms = () => {
-        
+        const response = symptoms_service.sendSymptoms(formData)
+            .then((data: SymptomCheckerResponse) => {
+                // TODO move to the results page.
+                return data
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
 
     return (
@@ -45,7 +54,9 @@ function SymptomForm() {
                         onSearchClick={handleSearchSymptom}
                         onAddSymptomClick={handleAddSymptom}
                         onDeleteSymptomClick={() => { }} />
-                    <button className="base my-10 p-2 px-16" type="submit" disabled={formData.symptoms.length === 0}>
+                    <button className="base my-10 p-2 px-16" type="button"
+                        onClick={handleSubmitSymptoms}
+                        disabled={formData.hpo_ids.length === 0} >
                         SUBMIT
                     </button>
                 </form>
