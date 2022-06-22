@@ -36,6 +36,7 @@ function SymptomForm() {
         const response = symptoms_service.sendSymptoms(formData)
             .then((data: SymptomCheckerResponse) => {
                 // TODO move to the results page.
+                // SymptomCheckerResponse contains a result_id, move directly to the id page
                 console.log(data)
                 return data
             })

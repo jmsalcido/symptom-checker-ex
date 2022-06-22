@@ -32,8 +32,12 @@ export type MatchingDisorder = {
     weight: number,
 }
 
-export type SymptomCheckerResponse = {
+export type ResultResponse = {
     result_id: string,
     matching_disorders: MatchingDisorder[],
     symptoms: SymptomData[]
+}
+
+export type SymptomCheckerResponse = {
+    result_id: string
 }
