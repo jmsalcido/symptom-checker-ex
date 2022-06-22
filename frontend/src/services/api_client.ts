@@ -1,3 +1,5 @@
+import { StatusError } from "../types/errors"
+
 const API_URL = process.env.REACT_APP_API_URL
     ? process.env.REACT_APP_API_URL : 'http://localhost:8000'
 
@@ -33,9 +35,10 @@ export const doPostRequest = async (path: string, requestBody: object) => {
 export const getRequest = async (path: string) => {
     const response = await fetch(`${API_URL}${path}`, options('GET'))
     const responseBody = await response.json()
+
     if (response.ok) {
         return responseBody;
     } else {
-        throw Error(responseBody.error)
+        throw new StatusError(responseBody.error, response.status)
     }
 }
