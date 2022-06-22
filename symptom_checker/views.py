@@ -33,6 +33,10 @@ class SymptomCheckerMatch(APIView):
             match_service = SymptomCheckerMatchService()
             matching_disorders = match_service.match(request_data)
 
+            if len(matching_disorders) == 0:
+                return Response({"error": "No matching disorders"},
+                                status=status.HTTP_404_NOT_FOUND)
+
             disorder_symptom_service = SymptomCheckerDisorderSymptomService()
             disorder_symptom_service.load_disorder_symptoms(matching_disorders)
 
