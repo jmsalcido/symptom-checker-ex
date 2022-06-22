@@ -7,12 +7,16 @@
 - [x] Create endpoint for searching symptoms
 - [x] Create endpoint for sending symptoms
 - [x] Create endpoint for looking at results
+- [ ] Investigate unit tests in django/python
+- [ ] Use an actual database
+- [ ] Dockerize environment (python, database)
+- [ ] Deployment on a cloud provider (GCP for example)
 
-### Backend EXTRA POINTS
-- [ ] Use database
-
-### Backend EXTRA-EXTRA POINTS
-- [ ] Deployment on simple cloud provider like Heroku
+## Improvements for future:
+- [ ] Order the symptoms relevance or group them somehow so we can return a better filtered list and user is able to select from those
+  - I am thinking on a frequency ratio on disorders could be a good helpful datum to categorize the symptoms
+- [ ] A better filtering for symptoms
+  - not just by name and just lowercase, being able to lookup by id, name, description (if any) would be great.
 
 ## Endpoints
 This endpoint will be hit at the load of the UI to show what symptoms we are experiencing.
