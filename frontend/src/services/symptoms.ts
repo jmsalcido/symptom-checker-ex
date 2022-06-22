@@ -1,4 +1,4 @@
-import { ErrorMessage, SymptomCheckerRequest, SymptomCheckerResponse, SymptomSearchRequest, SymptomSearchResponse } from "../types/symptoms"
+import { SymptomCheckerRequest, SymptomSearchRequest, SymptomSearchResponse } from "../types/symptoms"
 
 const apiUrl = process.env.REACT_APP_API_URL
     ? process.env.REACT_APP_API_URL : 'http://localhost:8000'

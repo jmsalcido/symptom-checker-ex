@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SymptomData, SymptomCheckerRequest, SymptomCheckerResponse, ErrorMessage } from "../../types/symptoms";
+import { SymptomData, SymptomCheckerRequest, SymptomCheckerResponse } from "../../types/symptoms";
 import SymptomInputSearch from "./SymptomInputSearch";
 import * as symptoms_service from '../../services/symptoms';
 
@@ -36,6 +36,7 @@ function SymptomForm() {
         const response = symptoms_service.sendSymptoms(formData)
             .then((data: SymptomCheckerResponse) => {
                 // TODO move to the results page.
+                console.log(data)
                 return data
             })
             .catch((error) => {
