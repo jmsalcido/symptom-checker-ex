@@ -1,24 +1,34 @@
 import { useState } from "react";
-import { SymptomData, SymptomCheckerRequest, SymptomCheckerResponse } from "../../types/symptoms";
+import { SymptomData, SymptomCheckerRequest, SymptomCheckerResponse, SymptomSearchResponse } from "../../types/symptoms";
 import SymptomInputSearch from "./SymptomInputSearch";
 import * as symptoms_service from '../../services/symptoms';
+import { useNavigate } from "react-router-dom";
 
 function SymptomForm() {
-    const [symptomData, setSymptomData] = useState<SymptomData[]>([])
+    const navigate = useNavigate()
 
+    const [symptomData, setSymptomData] = useState<SymptomData[]>([])
     const [selectedSymptoms, setSelectedSymptoms] = useState<SymptomData[]>([])
     const [formData, setFormData] = useState<SymptomCheckerRequest>({
         hpo_ids: []
     })
 
+    const [isSearching, setIsSearching] = useState(false)
+    const [isError, setIsError] = useState(false)
+
     const handleSearchSymptom = async (searchTerm: string) => {
-        // TODO here we can set the status to loading the UI to show a "loading" screen
-        // ie: setLoadingStatus(false)
-        const symptoms = await symptoms_service.searchSymptoms(searchTerm)
-        // TODO here we return back the status to not loading
-        // ALSO let the user know if there was an error.
-        // ie: setLoadingStatus(false)
-        setSymptomData(symptoms.symptoms)
+        setIsSearching(true)
+        setSymptomData([])
+        setTimeout(() => {
+            symptoms_service.searchSymptoms(searchTerm)
+                .then((data: SymptomSearchResponse) => {
+                    setSymptomData(data.symptoms)
+                    setIsError(false)
+                }).catch((error) => {
+                    setIsError(true)
+                })
+            setIsSearching(false)
+        }, 500)
     }
 
     const handleAddSymptom = (symptomData: SymptomData) => {
@@ -33,11 +43,9 @@ function SymptomForm() {
     }
 
     const handleSubmitSymptoms = () => {
-        const response = symptoms_service.sendSymptoms(formData)
+        symptoms_service.sendSymptoms(formData)
             .then((data: SymptomCheckerResponse) => {
-                // TODO move to the results page.
-                // SymptomCheckerResponse contains a result_id, move directly to the id page
-                console.log(data)
+                navigate(`/results/${data.result_id}`)
                 return data
             })
             .catch((error) => {
@@ -50,18 +58,18 @@ function SymptomForm() {
             <h1>Thank you for taking the time.</h1>
             <h1>Please look up your symptoms in the input field, i.e: <span className="italic">finger</span></h1>
             <div className="mt-10">
-                <form>
-                    <SymptomInputSearch symptomData={symptomData}
-                        selectedSymptoms={selectedSymptoms}
-                        onSearchClick={handleSearchSymptom}
-                        onAddSymptomClick={handleAddSymptom}
-                        onDeleteSymptomClick={() => { }} />
-                    <button className="base my-10 p-2 px-16" type="button"
-                        onClick={handleSubmitSymptoms}
-                        disabled={formData.hpo_ids.length === 0} >
-                        SUBMIT
-                    </button>
-                </form>
+                <SymptomInputSearch symptomData={symptomData}
+                    selectedSymptoms={selectedSymptoms}
+                    isSearching={isSearching}
+                    isError={isError}
+                    onSearchClick={handleSearchSymptom}
+                    onAddSymptomClick={handleAddSymptom}
+                    onDeleteSymptomClick={() => { }} />
+                <button className="base my-10 p-2 px-16" type="button"
+                    onClick={handleSubmitSymptoms}
+                    disabled={formData.hpo_ids.length === 0} >
+                    SUBMIT
+                </button>
             </div>
         </div>
     );

@@ -24,13 +24,47 @@ function SymptomRowField(props: {
     );
 }
 
+function SymptomSearchView() {
+    return (
+        <div className="flex flex-col text-center">
+            Searching...
+        </div>
+    )
+}
+
+function SymptomErrorView() {
+    return (
+        <div className="flex flex-col text-center">
+            There was an error while doing the search.
+        </div>
+    )
+}
+
+
 function SymptomInputSearchResult(props: {
+    isSearching: boolean,
+    isError: boolean,
     symptomData: SymptomData[],
     onAddSymptomClick: Function,
 }) {
+
+    const content = () => {
+        if (props.isSearching) {
+            return (<SymptomSearchView />)
+        } else if (props.isError) {
+            return (<SymptomErrorView />)
+        } else {
+            return (
+                <div className="overflow-y-auto w-full">
+                    {props.symptomData.map((data, index) => (<SymptomRowField key={index} data={data} onAddSymptomClick={props.onAddSymptomClick} />))}
+                </div>
+            )
+        }
+    }
+
     return (
-        <div className="overflow-y-auto w-full max-h-[256px]">
-            {props.symptomData.map((data, index) => (<SymptomRowField key={index} data={data} onAddSymptomClick={props.onAddSymptomClick} />))}
+        <div className="overflow-y-auto max-h-[256px]">
+            {content()}
         </div>
     )
 }

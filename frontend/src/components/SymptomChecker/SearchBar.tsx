@@ -19,7 +19,8 @@ function SearchBar(props: any) {
             <div className="border border-bold">
                 <button type="button"
                     className="p-2.5 text-white bg-kind-giant rounded-r-lg hover:bg-bond focus:ring-4 focus:outline-none focus:ring-transparent"
-                    onClick={onClick}>
+                    onClick={onClick}
+                    disabled={props.isSearching}>
                     <SearchIcon />
                 </button>
             </div>

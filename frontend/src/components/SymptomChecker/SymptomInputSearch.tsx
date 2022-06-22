@@ -7,6 +7,8 @@ import SymptomInputSearchResult from "./SymptomInputSearchResult";
 function SymptomInputSearch(props: {
     symptomData: SymptomData[],
     selectedSymptoms: SymptomData[],
+    isSearching: boolean,
+    isError: boolean,
     onSearchClick: Function,
     onAddSymptomClick: Function,
     onDeleteSymptomClick: Function
@@ -24,8 +26,11 @@ function SymptomInputSearch(props: {
             </span>
             <div className="flex">
                 <div className="border rounded-md border-1 border-bold min-h-[300px] max-h-[300px] w-full">
-                    <SearchBar onSearchClick={props.onSearchClick} />
-                    <SymptomInputSearchResult symptomData={props.symptomData} onAddSymptomClick={props.onAddSymptomClick} />
+                    <SearchBar onSearchClick={props.onSearchClick} isSearching={props.isSearching} />
+                    <SymptomInputSearchResult isSearching={props.isSearching}
+                        isError={props.isError}
+                        symptomData={props.symptomData}
+                        onAddSymptomClick={props.onAddSymptomClick} />
                 </div>
             </div>
             {selectedSymptomsContent}
