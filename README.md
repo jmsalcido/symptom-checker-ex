@@ -8,6 +8,7 @@
 - [x] Create endpoint for searching symptoms
 - [x] Create endpoint for sending symptoms
 - [x] Create endpoint for looking at results
+- [x] Dockerize environment - `docker-compose up`
 
 ### Things that I would love to try
 
@@ -20,8 +21,6 @@
       that.
     - I think we can load the data from Orphadata easily in relationships something
       like: https://dbdiagram.io/d/62aa81779921fe2a9616aa60
-- [ ] Dockerize environment (python, database)
-    - Since I was using a virtual environment with conda i just started adding dependencies.
 - [ ] Deployment on a cloud provider (GCP)
     - I was thinking on adding GCP as I want to try uploading a docker image to the registry and all the tooling from
       GCP.
@@ -37,6 +36,24 @@
     - I am thinking on a frequency ratio on disorders could be a good helpful datum to categorize the symptoms
 - [ ] A better filtering for symptoms
     - not just by name and just lowercase, being able to lookup by id, name, description (if any) would be great.
+
+## How to run:
+
+### Docker & docker-compose
+
+There are 2 Dockerfile in `./` and `./frontend`, it's easier to just use `docker-compose`
+
+```shell
+docker-compose up
+```
+
+### Local environment
+
+- Create a new virtual env
+- Install `requirements.txt`
+- run `python manage.py runserver`
+- for `frontend` see `./frontend/README.md`
+
 
 ## Project Structure
 

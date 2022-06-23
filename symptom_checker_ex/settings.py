@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-o4+klqt8dn)14em$^cdm7u#4ycj1$_&xx^r#admc!coom*l(0(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -54,6 +54,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
+    'http://localhost',
 ]
 
 ROOT_URLCONF = 'symptom_checker_ex.urls'
