@@ -49,7 +49,7 @@ function ResultDetailView(props: {
     }, [])
 
     return (
-        <div>
+        <div className="h-auto">
             {isResult ? <ResultMatchView result={result}/> : null}
             <div className={`not_found ${showNotFound}`}>
                 <div className="p-10 text-center">
