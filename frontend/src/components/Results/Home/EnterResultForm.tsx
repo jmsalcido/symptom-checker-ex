@@ -8,7 +8,9 @@ function EnterResultForm() {
         setData(event.target.value)
     }
     const onClick = () => {
-        navigate('/results/' + data)
+        setTimeout(() => {
+            navigate('/results/' + data)
+        }, 500)
     }
 
     return (

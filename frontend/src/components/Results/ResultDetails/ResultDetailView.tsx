@@ -5,6 +5,39 @@ import { Result, ResultResponse } from "../../../types/results"
 import { SymptomData } from "../../../types/symptoms"
 import ResultMatchView from "./ResultMatchView"
 
+function NoResultsView(props: {
+    show: boolean
+}) {
+
+    const element = props.show ? (
+        <div className='not_found'>
+            <div className="p-10 text-center">
+                <h2 className="text-md font-bold">We were not able to find any result</h2>
+                <p>You can always get to the symptom checker and try again.</p>
+            </div>
+        </div>
+    ) : null
+
+    return (<>{element}</>)
+}
+
+function ErrorView(props: {
+    show: boolean
+}) {
+
+    const element = props.show ? (
+        <div className='server_error'>
+            <div className="p-10 text-center">
+                <h2 className="text-md font-bold">There was an error while loading your results</h2>
+                <p>Please contact me at: `jmsalcidoaguilar@gmail.com`</p>
+            </div>
+        </div>
+    ) : null
+
+    return (<>{element}</>)
+}
+
+
 function ResultDetailView(props: {
     result_id: string | undefined
 }) {
@@ -13,9 +46,6 @@ function ResultDetailView(props: {
     const [isError, setIsError] = useState(false)
     const [isNotFound, setIsNotFound] = useState(false)
     const [isResult, setIsResult] = useState(false)
-
-    const showNotFound = isNotFound === false ? 'hidden' : ''
-    const showError = isError === false ? 'hidden' : ''
 
     useEffect(() => {
         getResult(props.result_id)
@@ -50,19 +80,9 @@ function ResultDetailView(props: {
 
     return (
         <div className="h-auto">
-            {isResult ? <ResultMatchView result={result}/> : null}
-            <div className={`not_found ${showNotFound}`}>
-                <div className="p-10 text-center">
-                    <h2 className="text-md font-bold">We were not able to find any result</h2>
-                    <p>You can always get to the symptom checker and try again.</p>
-                </div>
-            </div>
-            <div className={`server_error ${showError}`}>
-                <div className="p-10 text-center">
-                    <h2 className="text-md font-bold">There was an error while loading your results</h2>
-                    <p>Please contact me at: `jmsalcidoaguilar@gmail.com`</p>
-                </div>
-            </div>
+            {isResult ? <ResultMatchView result={result} /> : null}
+            <NoResultsView show={isNotFound} />
+            <ErrorView show={isError} />
         </div>
     )
 }

@@ -55,6 +55,23 @@ docker-compose up
 - for `frontend` see `./frontend/README.md`
 
 
+## Matching Disorders
+Right now there is a rough match algorithm based on just the relationship inclusion.
+
+In order to decide the matching position the weight of the frequency on each symptom is just used to give them a position.
+
+In order to have a better algorithm we should follow:
+https://www.orpha.net/consor/cgi-bin/Disease_HPOTerms.php?lng=EN
+
+We have the DiagnosticCriteria in some symptoms that could make the symptom selection easier and the decision better.
+```text
+The phenotypic abnormality can be defined as one of the following :
+
+    - Pathognomonic sign : a sign whose presence indicates that a particular disease is present beyond any doubt. The absence of this sign does not exclude the possibility of the presence of the disease, but the presence of the pathognomonic sign affirms it with certainty.
+    - Diagnostic criterion : phenotypic abnormalities noted as « diagnostic criterion » are those included in established sets of criteria to establish the diagnosis of a particular disease having been published in a peer-reviewed journal.
+    - Exclusion criterion : phenotypic abnormalities noted as « exclusion criterion » are those that are always absent in a particular disease and therefore exclude its diagnosis. 
+```
+
 ## Project Structure
 
 ```
