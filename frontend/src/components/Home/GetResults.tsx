@@ -5,9 +5,9 @@ import results from '../../assets/SymptomChecker/results.png';
 function GetResults() {
 
     return (
-        <div className="bg-pachyderm text-white">
+        <div className="bg-pachyderm text-white py-12 flex-1">
             <div className='w-full flex flex-col justify-between'>
-                <div className="grid md:grid-cols-2 max-w-[1240px] mx-auto py-10">
+                <div className="grid md:grid-cols-2 max-w-[1240px] mx-auto">
                     <div>
                         <img src={results} alt="/" className="w-full" />
                     </div>

@@ -9,7 +9,7 @@ import ResultsView from './components/Results/ResultDetails';
 function App() {
   return (
     <BrowserRouter>
-      <div className='h-screen flex flex-col'>
+      <div className='flex flex-col h-screen'>
         <NavBar />
         <Routes>
           <Route path="/" element={<Home />} />
