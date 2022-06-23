@@ -59,6 +59,13 @@ function ResultMatchView(props: {
             </div>
             <div className={`${hideSymptoms} my-10`}>
                 <div className="flex flex-col">
+                    <h1 className="text-2xl text-center">To learn more about the disorder click<span> </span>
+                        <a target={'_blank'}
+                            rel="noreferrer"
+                            href={`https://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=en&Expert=${selectedDisorder?.disorder.orpha_code}`}>
+                            here
+                        </a>
+                    </h1>
                     <h2 className="text-2xl text-center font-semibold p-4">The frequencies of the symptoms on this disorder is as follows:</h2>
                     <p className="mx-auto mb-10">You can click on each of those and you will be able to learn more about each of them.</p>
                 </div>

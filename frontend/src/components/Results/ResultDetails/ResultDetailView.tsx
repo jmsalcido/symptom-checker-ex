@@ -29,7 +29,7 @@ function ErrorView(props: {
         <div className='server_error'>
             <div className="p-10 text-center">
                 <h2 className="text-md font-bold">There was an error while loading your results</h2>
-                <p>Please contact me at: `jmsalcidoaguilar@gmail.com`</p>
+                <p>Please contact me at: `jmsalcidoaguilar @ gmail.com`</p>
             </div>
         </div>
     ) : null

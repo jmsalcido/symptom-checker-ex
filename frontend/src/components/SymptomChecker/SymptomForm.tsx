@@ -26,11 +26,12 @@ function SymptomForm() {
             symptoms_service.searchSymptoms(searchTerm)
                 .then((data: SymptomSearchResponse) => {
                     setSymptomData(data.symptoms)
+                    setIsSearching(false)
                     setIsSearchError(false)
                 }).catch((error) => {
+                    setIsSearching(false)
                     setIsSearchError(true)
                 })
-            setIsSearching(false)
         }, 500)
     }
 
@@ -43,6 +44,13 @@ function SymptomForm() {
 
             setFormData(newFormData)
         }
+    }
+
+    const handleClearSymptoms = () => {
+        setFormData({
+            hpo_ids: []
+        })
+        setSelectedSymptoms([])
     }
 
     const handleSubmitSuccess = (resultId: string) => {
@@ -97,6 +105,11 @@ function SymptomForm() {
                     onClick={handleSubmitClick}
                     disabled={isSubmit || formData.hpo_ids.length === 0} >
                     SUBMIT
+                </button>
+                <button className="light my-10 p-2 px-5 mx-4" type="button"
+                    onClick={handleClearSymptoms}
+                    disabled={isSubmit} >
+                    CLEAR SYMPTOMS
                 </button>
                 {errorOnSubmitView}
                 {submitSuccessView}
